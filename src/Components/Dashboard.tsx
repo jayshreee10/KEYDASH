@@ -1,168 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
-
-type WordType = string[]; // To type the words array
+import { easyWords, mediumWords, hardWords, WordType } from "../Utility/words";
+import ResultModal from "./ResultModal";
 
 const Dashboard = () => {
   // Define word sets
-  const easyWords: WordType = [
-    "cat",
-    "dog",
-    "sun",
-    "book",
-    "pen",
-    "tree",
-    "fish",
-    "milk",
-    "ball",
-    "hat",
-    "car",
-    "bike",
-    "bird",
-    "cup",
-    "box",
-    "key",
-    "star",
-    "apple",
-    "desk",
-    "chair",
-    "home",
-    "door",
-    "frog",
-    "lamp",
-    "shoe",
-    "flag",
-    "note",
-    "coin",
-    "ring",
-    "map",
-    "sky",
-    "leaf",
-    "bird",
-    "rope",
-    "bed",
-    "bowl",
-    "hat",
-    "bell",
-    "drum",
-    "sand",
-    "wave",
-    "hill",
-    "snow",
-    "rain",
-    "wind",
-    "moon",
-    "star",
-    "cloud",
-    "rock",
-    "grass",
-    "fish",
-    "frog",
-    "ant",
-    "duck",
-    "goat",
-    "wolf",
-    "cow",
-    "sheep",
-    "hen",
-    "owl",
-  ];
-  const mediumWords: WordType = [
-    "water",
-    "food",
-    "cake",
-    "bread",
-    "grass",
-    "stone",
-    "cloud",
-    "rain",
-    "snow",
-    "wind",
-    "fire",
-    "light",
-    "dark",
-    "cold",
-    "warm",
-    "earth",
-    "moon",
-    "night",
-    "day",
-    "happy",
-    "smile",
-    "laugh",
-    "dance",
-    "sing",
-    "play",
-    "write",
-    "read",
-    "speak",
-    "listen",
-    "think",
-    "river",
-    "forest",
-    "mountain",
-    "desert",
-    "valley",
-    "garden",
-    "ocean",
-    "field",
-    "lake",
-    "pond",
-    "street",
-    "house",
-    "school",
-    "market",
-    "church",
-    "bridge",
-    "park",
-    "shop",
-    "hotel",
-    "theater",
-    "sunset",
-    "sunrise",
-    "morning",
-    "evening",
-    "afternoon",
-    "nightfall",
-    "twilight",
-    "dawn",
-    "noon",
-    "midnight",
-  ];
-  const hardWords: WordType = [
-    "algorithm",
-    "telescope",
-    "philosophy",
-    "revolution",
-    "microscope",
-    "electricity",
-    "imagination",
-    "psychology",
-    "hypothesis",
-    "civilization",
-    "architecture",
-    "environment",
-    "biodiversity",
-    "metamorphosis",
-    "photosynthesis",
-    "cryptocurrency",
-    "artificial",
-    "intelligence",
-    "nanotechnology",
-    "sustainability",
-    "extraterrestrial",
-    "collaboration",
-    "entrepreneurship",
-    "biotechnology",
-    "infrastructure",
-    "globalization",
-    "renaissance",
-    "productivity",
-    "consciousness",
-    "technological",
-    "transcendence",
-    "paradigm",
-    "theoretical",
-  ];
 
   // State declarations with types
   const [words, setWords] = useState<WordType>(easyWords);
@@ -172,7 +13,6 @@ const Dashboard = () => {
   const [totalChars, setTotalChars] = useState<number>(0);
   const [isTimerStarted, setIsTimerStarted] = useState<boolean>(false);
   const [timerDuration, setTimerDuration] = useState<number>(30);
-  const [timeLeft, setTimeLeft] = useState<number>(timerDuration);
   const [wpm, setWpm] = useState<number>(0);
   const [accuracy, setAccuracy] = useState<number>(0);
   const [showResult, setShowResult] = useState<boolean>(false);
@@ -197,7 +37,6 @@ const Dashboard = () => {
     setCorrectChars(0);
     setTotalChars(0);
     setIsTimerStarted(false);
-    setTimeLeft(timerDuration);
     setShowResult(false);
     document.addEventListener("keydown", handleTyping);
   };
@@ -258,7 +97,7 @@ const Dashboard = () => {
   const startTimer = () => {
     startTime.current = Date.now();
     const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
+      setTimerDuration((prevTime) => {
         if (prevTime <= 1) {
           clearInterval(timer);
           endGame();
@@ -286,7 +125,67 @@ const Dashboard = () => {
 
   return (
     <div className="container">
-      <div id="timer">{timeLeft}</div>
+      <header>
+        <span>KeyDash</span>
+        <nav>
+          <ul id="time-options">
+            <li
+              id="15"
+              onClick={() => {
+                setTimerDuration(15);
+              }}
+            >
+              15s
+            </li>
+            <li
+              id="30"
+              onClick={() => {
+                setTimerDuration(30);
+              }}
+            >
+              30s
+            </li>
+            <li
+              id="60"
+              onClick={() => {
+                setTimerDuration(60);
+              }}
+            >
+              60s
+            </li>
+          </ul>
+        </nav>
+        <nav>
+          <ul id="level-options">
+            <li
+              id="easy"
+              onClick={() => {
+                setWords(easyWords);
+              }}
+            >
+              Easy
+            </li>
+            <li
+              id="medium"
+              onClick={() => {
+                setWords(mediumWords);
+              }}
+            >
+              Medium
+            </li>
+            <li
+              id="hard"
+              onClick={() => {
+                setWords(hardWords);
+              }}
+            >
+              Hard
+            </li>
+          </ul>
+        </nav>
+      </header>
+
+      <div id="timer">{timerDuration}</div>
       <div id="words-display">
         {words.map((word, wordIndex) => (
           <span key={wordIndex} className="word">
@@ -311,18 +210,7 @@ const Dashboard = () => {
       </button>
 
       {showResult && (
-        <div id="result-card">
-          <h2>Results</h2>
-          <p>
-            WPM: <span>{wpm}</span>
-          </p>
-          <p>
-            Accuracy: <span>{accuracy}%</span>
-          </p>
-          <button id="close-result-btn" onClick={resetGame}>
-            Close
-          </button>
-        </div>
+        <ResultModal wpm={wpm} accuracy={accuracy} resetGame={resetGame} />
       )}
     </div>
   );

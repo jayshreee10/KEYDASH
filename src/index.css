@@ -296,3 +296,20 @@ nav ul li.selected {
         padding: 6px 12px;
     }
 }
+
+.correct {
+    color: white;
+  }
+  
+  .incorrect {
+    color: red;
+  }
+  
+  .current {
+    background-color: yellow;
+  }
+  
+  .word {
+    margin-right: 10px;
+  }
+  
